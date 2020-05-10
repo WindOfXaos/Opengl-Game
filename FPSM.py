@@ -41,7 +41,6 @@ class Spectator:
             glTranslate(fwd*m[2],0 ,fwd*m[10])
             glTranslate(strafe*m[0],0 ,strafe*m[8])
 
-
         buffer = glGetDoublev(GL_MODELVIEW_MATRIX)
         c = (-1 * numpy.mat(buffer[:3,:3]) * \
             numpy.mat(buffer[3,:3]).T).reshape(3,1)
