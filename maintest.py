@@ -11,7 +11,7 @@ from point import *
 from objloader import *
 import FPSM
 
-bxyz = []
+#bxyz = []
 line = False
 dm = 0
 coll = False
@@ -19,31 +19,56 @@ fres = 0
 sres = 0
 cam = [0, 0, 0]
 
-def bullet():
-    global bxyz
-    speed = 0.1
-    m = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
-    x, y, z = m[12], m[13], m[14]
-    if copysign(1, x) == -1 and x <= 0:
-        glTranslate(speed, 0, 0)
-    if copysign(1, x) == 1 and x >= 0:
-        glTranslate(-speed, 0, 0)
+class rocket():
 
-    if copysign(1, y) == -1 and y <= 0:
-        glTranslate(0, speed, 0)
-    if copysign(1, y) == 1 and y >= 0:
-        glTranslate(0, -speed, 0)
+    def __init__(self, sh):
 
-    if copysign(1, z) == -1 and z <= 0:
-        glTranslate(0, 0, speed)
-    if copysign(1, z) == 1 and z >= 0:
-        glTranslate(0, 0, -speed)
-        
-    m = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
-    bxyz = [m[12], m[13], m[14]]
+        obj2 = os.path.join(scriptDIR,"Game Objects\\Robots\\4\\rocketleft.obj")
+        self.rocketleft = point(obj2)
+        glPushMatrix()
+        glTranslate(self.rocketleft[0], self.rocketleft[2], self.rocketleft[1])
+        self.m = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
+        glPopMatrix()
+        self.x, self.y, self.z = self.m[12], self.m[13], self.m[14]
+        self.s = 5
+        self.h = sqrt((self.x**2)+(self.y**2)+(self.z**2))
+        self.xn = -(self.x/self.h)
+        self.yn = -(self.y/self.h)
+        self.zn = -(self.z/self.h)
+        self.shot = sh
 
-def distance(x1, y1, x2, y2):
-    dist = sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)))
+    def update(self):
+        f = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
+        xa, ya, za = f[12], f[13], f[14]
+        if self.h < 400 :
+            if xa < 0:
+                glTranslate(self.s*self.xn, 0, 0)
+            else:
+                glTranslate(-self.s*self.xn, 0, 0)
+
+            if ya < 0:
+                glTranslate(0, self.s*self.yn, 0)
+            else:
+                glTranslate(0, -self.s*self.yn, 0)
+
+            if za < 0:
+                glTranslate(0, 0, self.s*self.zn)
+            else:
+                glTranslate(0, 0, -self.s*self.zn)
+
+    def draw(self):
+
+        keys = pygame.key.get_pressed()
+        glPushMatrix()
+        if self.shot:
+            glTranslate(self.rocketleft[0], self.rocketleft[2], self.rocketleft[1])
+        self.update()
+        k = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
+        gluSphere(gluNewQuadric(),20,100,20)
+        glPopMatrix()
+
+def distance(x1, y1, z1, x2, y2, z2):
+    dist = sqrt(((x2-x1)*(x2-x1)) + ((y2-y1)*(y2-y1)) + ((z2-z1)*(z2-z1)))
     print(dist)
     return dist
 
@@ -126,7 +151,7 @@ def pLine(x1 ,z1, x2, z2, px, pz):
     else: False
 
 def main():
-    global coll,line,cam
+    global coll,line,cam,bxyz
     pygame.init()
     pygame.mixer.pre_init(44100, -16, 1, 512)
     viewport = (800,600)
@@ -158,7 +183,8 @@ def main():
     lsfx = os.path.join(scriptDIR,"Game Objects\\Weapon\\sfx\\laser.wav")
     effect1 = pygame.mixer.Sound(lsfx)
     effect1.set_volume(0.2)
-    
+
+    '''
     i = 0
     direct = os.path.join(scriptDIR, "Game Objects\\Weapon\\Animated")
     guna = [None for _ in range(8)]
@@ -169,6 +195,10 @@ def main():
             i = i + 1
         else:
             continue
+    '''
+
+    obj1 = os.path.join(scriptDIR,"Game Objects\\Weapon\\Animated\\gun_000001.obj")
+    gun = OBJ(obj1,swapyz = True)
 
     obj1 = os.path.join(scriptDIR,"Game Objects\\Platform\\1\\plat2.obj")
     world = OBJ(obj1,swapyz = True)
@@ -176,8 +206,7 @@ def main():
     obj2 = os.path.join(scriptDIR,"Game Objects\\Robots\\4\\boss.obj")
     rob1 = OBJ(obj2,swapyz = True)
     rob1mid = objcenter(obj2)
-    obj2 = os.path.join(scriptDIR,"Game Objects\\Robots\\4\\rocketleft.obj")
-    rocketleft = point(obj2)
+
 
     clock = pygame.time.Clock()
     exit = True
@@ -224,22 +253,50 @@ def main():
         glRotate(-90, 1, 0, 0)
         glScale(0.3, 0.3, 0.3)
         glCallList(rob1.gl_list)
-        glPushMatrix()
-        if shot:
-            glTranslate(rocketleft[0], rocketleft[2], rocketleft[1])
-            shot = False
-        else: glTranslate(bxyz[0], bxyz[1], bxyz[2])
-        bullet()
-        gluSphere(gluNewQuadric(),20,100,20)
-        glPopMatrix()
-        glTranslate(rob1mid[0], rob1mid[2], rob1mid[1])
-        glScale(15, 15, 15) 
-        if colcheck(20.5, 20.5): 
+
+
+        '''
+        mv = glGetDoublev(GL_MODELVIEW_MATRIX).flatten()
+        pr = glGetDoublev(GL_PROJECTION_MATRIX).flatten()
+        vp = glGetDoublev(GL_VIEWPORT).flatten()
+
+        if pygame.mouse.get_pressed()[0]:
+            gluUnProject(hx / 2, hy / 2, 0.0, mv, pr, vp, x, y, z)
+            ox ,oy, oz = x, y, z
+
+            gluUnProject(hx / 2, hy / 2, rob1mid[1], mv, pr, vp, x, y, z)
+            tx, ty, tz = x, y, z
+
+            drx = tx - ox
+            dry = ty - oy
+            drz = tz - oz
+
+            h = sqrt((drx**2)+(dry**2)+(drz**2)) 
+            drx /= h
+            dry /= h
+            drz /= h
+
+            cx = (tx+ox)/2
+            cy = (ty+oy)/2
+            cz = (tz+oz)/2
+
+            hit = False
+            
+            while not hit:
+                d = distance(cx, cy, cz, rob1mid[0], rob1mid[2], rob1mid[1])
+                if d < 
+
+        '''
+
+
+
+        glTranslate(rob1mid[0], rob1mid[2], rob1mid[1]) 
+        if colcheck(20.5, 100): 
             coll = True
-        #if coll: glColor(1, 0, 0, 0.5)
-        #else: glColor(0, 0, 0, 0.2)
-       # gluSphere(gluNewQuadric(),20,100,20)
-        #glColor(1, 1, 1, 1)
+        if coll: glColor(1, 0, 0, 0.5)
+        else: glColor(0, 0, 0, 0.2)
+        gluSphere(gluNewQuadric(),100*1/0.3,100,20)
+        glColor(1, 1, 1, 1)
         glPopMatrix()
 
         
@@ -270,7 +327,7 @@ def main():
                 fire, i = False, 0
         else:
             moving()
-            glCallList(guna[0].gl_list)
+            glCallList(gun.gl_list)
         glPopMatrix()
 
 
