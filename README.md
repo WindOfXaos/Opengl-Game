@@ -9,7 +9,7 @@ pyopengl, pygame, fps
 
 ![Github all releases](https://img.shields.io/github/downloads/WindOfXaos/Opengl-Game/total?color=red&style=for-the-badge)
 
-
+Open **maintest.exe** to run
 
 # Controls:
 * **WASD** keys to move
