@@ -1,6 +1,16 @@
 # Opengl-Game
 pyopengl, pygame, fps
 
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+
+
+# Download
+[Opengl-Game](https://github.com/WindOfXaos/Opengl-Game/releases/latest/download/Opengl-Game-v0.1.zip) 
+
+![Github all releases](https://img.shields.io/github/downloads/WindOfXaos/Opengl-Game/total?color=red&style=for-the-badge)
+
+
+
 # Controls:
 * **WASD** keys to move
 * **Left-click** mouse to fire
