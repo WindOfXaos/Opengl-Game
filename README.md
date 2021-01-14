@@ -8,7 +8,7 @@ pyopengl, pygame, fps
 * **ESC** to quit the game
 
 # In-Game Gameplay:
-![](/GIFs/1.gif) <br/> Lighting.
+![](/GIFs/1.gif) <br/> Added lighting.
 
 <br/> ![](/GIFs/2.gif) <br/> Collision detection using spherical surface.
 
