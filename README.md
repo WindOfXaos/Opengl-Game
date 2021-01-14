@@ -1,6 +1,9 @@
 # Opengl-Game
 pyopengl, pygame, fps
 
+# Download
+https://github.com/WindOfXaos/Opengl-Game/tree/v0.1-pre-alpha/Opengl-Game-v0.1.zip
+
 # Controls:
 * **WASD** keys to move
 * **Left-click** mouse to fire
