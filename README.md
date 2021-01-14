@@ -12,6 +12,6 @@ pyopengl, pygame, fps
 
 <br/> ![](/GIFs/2.gif) <br/> Collision detection using spherical surface.
 
-<br/> ![](/GIFs/3.gif) <br/> White lines connects objects sphere centers to the window center.
+<br/> ![](/GIFs/3.gif) <br/> White lines connect objects sphere centers to the window center (debugging purposes).
 
 <br/> ![](/GIFs/4.gif) <br/> Implementation of bullet physics.
