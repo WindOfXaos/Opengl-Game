@@ -1,4 +1,4 @@
-# opengl-game
+# Opengl-Game
 pyopengl, pygame, fps
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
